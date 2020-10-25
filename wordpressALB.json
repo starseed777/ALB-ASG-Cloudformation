@@ -520,7 +520,7 @@
             },
             "RuleAction": "allow",
             "Egress": "false",
-            "CidrBlock": "10.90.0.0/16"
+            "CidrBlock": "0.0.0.0/0"
 
         },
         "AppNACLEntryEgress100": {
@@ -590,7 +590,154 @@
             "Egress": "true",
             "CidrBlock": "0.0.0.0/0"
 
+        },
+        "LoadBalancer": {
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": {
+                "Subnets": [
+                    {
+                        "Ref": "DMZ1Public"
+                    },
+                    {
+                        "Ref": "DMZ2Public"
+                    }
+                ],
+                "Name": "load-balancer",
+                "Type": "application",
+                "Scheme": "internet-facing",
+                "SecurityGroups": [
+                    {
+                        "Ref": "LoadBalancerSecurityGroup"
+                    }
+                ],
+                "IpAdressType": "ipv4"
+
+            }
+        },
+        "Listener": {
+            "Type": "AWS::ElasticLoadBalancingV2::Listener",
+            "Properties": {
+                "DefaultActions": [ {
+                    "Type": "forward",
+                    "TargetGroupArn": {
+                        "Ref": "TargetGroup"
+                    }
+                }
+                    
+                ],
+                "LoadBalancerArn": {
+                    "Ref": "LoadBalancer"
+                },
+                "Port": "80",
+                "Protocol": "HTTP"
+
+
+            }
+        },
+        "TargetGroup": {
+            "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+            "Properties": {
+                "HealthCheckIntervalSeconds" : "10",
+                "HealthCheckPath": "/phpinfo.php",
+                "HealthCheckPort": "80",
+                "HealthCheckProtocol": "HTTP",
+                "HealthyThresholdCount": "2",
+                "Name": "TG-1",
+                "Port": "80",
+                "Protocol": "HTTP",
+                "UnhealthyThresholdCount": "2",
+                "VpcId": {"Ref": "VPC"}
+
+            }
+        },
+        "BastionSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "Description": "Bastion SG",
+                "VpcId": {"Ref": "VPC"}
+            },
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "BastionSG"
+                }
+            ],
+            "SecurityGroupIngress": [
+                {
+                    "CidrIp": "0.0.0.0/0",
+                    "FromPort": 22,
+                    "ToPort": 22,
+                    "Protocol": "tcp" 
+                }
+            ]
+        },
+        "LoadBalancerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "Description": "Load-Balancer SG",
+                "VpcId": {"Ref": "VPC"}
+            },
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "LoadBalancerSG"
+                }
+            ],
+            "SecurityGroupIngress": [
+                {
+                    "CidrIp": "0.0.0.0/0",
+                    "FromPort": 80,
+                    "ToPort": 80,
+                    "Protocol": "tcp" 
+                },
+                {
+                    "CidrIp": "0.0.0.0/0",
+                    "FromPort": 443,
+                    "ToPort": 443,
+                    "Protocol": "tcp" 
+                }
+            ]
+        },
+
+        "WebServerSecurityGroup": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "Description": "Web-Server SG",
+                "VpcId": {"Ref": "VPC"}
+            },
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "WebServerSG"
+                }
+            ],
+            "SecurityGroupIngress": [
+                {
+      
+                    "FromPort": 80,
+                    "IpProtocol": "tcp",
+                    "SourceSecurityGroupId": {
+                        "Ref": "LoadBalancerSecurityGroup"
+                    },
+                    "ToPort":80
+                     
+                },
+                {
+                    "FromPort": 22,
+                    "IpProtocol": "tcp",
+                    "SourceSecurityGroupId": {
+                        "Ref": "BastionSecurityGroup"
+                    },
+                    "ToPort": 22
+
+                }
+            ]
+
         }
+
+
+    }
+
 
         
 
