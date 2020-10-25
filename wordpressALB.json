@@ -29,7 +29,12 @@
             "Type": "AWS::EC2::InternetGateway",
             "DependsOn": "VPC",
             "Properties": {
-                "Tags": [{ "Key": "Name", "Value": "Blogigw"}]
+                "Tags": [ 
+                    {
+                        "Key": "Name", 
+                        "Value": "Blogigw"
+                    }
+                ]    
             } 
         },
         "InternetGatewayAttachment": {
@@ -53,10 +58,12 @@
                 },
                 "CidrBlock": "10.99.1.0/24",
                 "VpcId": {"Ref": "VPC"},
-                "Tags": {
-                    "KeyName": "Name",
-                    "Value": "DMZ1Public"
-                }
+                "Tags": [
+                    {
+                        "KeyName": "Name",
+                        "Value": "DMZ1Public"
+                    }
+                ]
 
             }
         },
@@ -73,10 +80,12 @@
                 },
                 "CidrBlock": "10.99.2.0/24",
                 "VpcId": {"Ref": "VPC"},
-                "Tags": {
-                    "KeyName": "Name",
-                    "Value": "DMZ2Public"
-                }
+                "Tags": [
+                    {
+                        "KeyName": "Name",
+                        "Value": "DMZ2Public"
+                    }
+                ]
 
             }
         },
@@ -93,10 +102,12 @@
                 },
                 "CidrBlock": "10.99.11.0/24",
                 "VpcId": {"Ref": "VPC"},
-                "Tags": {
-                    "KeyName": "Name",
-                    "Value": "AppLayer1Private"
-                }
+                "Tags": [
+                    {
+                        "KeyName": "Name",
+                        "Value": "AppLayer1Private"
+                    }
+                ]
 
             }
         },
@@ -113,10 +124,12 @@
                 },
                 "CidrBlock": "10.99.12.0/24",
                 "VpcId": {"Ref": "VPC"},
-                "Tags": {
-                    "KeyName": "Name",
-                    "Value": "AppLayer2Private"
-                }
+                "Tags": [
+                    {
+                        "KeyName": "Name",
+                        "Value": "AppLayer2Private"
+                    }
+                ]
 
             }
         },
@@ -124,10 +137,13 @@
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
                 "VpcId": {"Ref": "VPC"},
-                "Tags": {
-                    "KeyName": "Name",
-                    "Value": "PublicRT"
-                }
+                "Tags": [
+                    {
+                        "KeyName": "Name",
+                        "Value": "PublicRT"
+                    }
+                ]
+ 
             }
         },
         "RouteTableAssociation": {
@@ -165,6 +181,78 @@
             "DependsOn": "InternetGatewayAttachment"
 
 
+        },
+        "PrivateRT": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": { "Ref": "VPC" },
+                "Tags": [ 
+                    {
+                        "Key": "Name",
+                        "Value": "PrivateRT"
+                    }
+                ]
+            }
+
+        },
+        "RouteTableAssociationC": {
+            "Type": "AWS::EC2::RouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "AppLayer1Private" 
+                },
+                "RouteTableId": {
+                    "Ref": "PrivateRT"
+                }
+            }
+        },
+        "RouteTableAssociationD": {
+            "Type": "AWS::EC2::RouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "AppLayer2Private" 
+                },
+                "RouteTableId": {
+                    "Ref": "PrivateRT"
+                }
+            }
+        },
+
+        "NATElasticIp": {
+            "Type": "AWS:EC2:EIP",
+            "Properties": {
+                "Domain": "VPC"
+            },
+            "DependsOn": "InternetGatewayAttachment"
+        },
+        "NATGateway": {
+            "Type": "AWS::EC2::NatGateway",
+            "DependsOn": "NATElasticIp",
+            "Properties": {
+                "AllocationId": {
+                    "Fn::GetAtt": [
+                        "NATElasticIp",
+                        "AllocationId"
+                    ]
+                        
+                    
+                },
+                "SubnetId": {
+                    "Ref": "DMZ2Public"
+                }
+            }
+        },
+        "NATGatewayRoute": {
+            "Type": "AWS::EC2::Route",
+            "Properties": {
+                "RouteTableId": {
+                    "Ref": "PrivateRT"
+                },
+                "CidrBlock": "0.0.0.0/0",
+                "NatGatewayId": {
+                    "Ref": "NATGateway"
+                }
+            }
         }
 
 
