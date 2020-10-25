@@ -733,20 +733,116 @@
                 }
             ]
 
+        },
+        "LaunchConfiguration": {
+            "Type": "AWS::AutoScaling::LaunchConfiguration",
+            "DependsOn": "VPCGatewayAttachment",
+            "Properties": {
+                "ImageId": "ami-0947d2ba12ee1ff75",
+                "InstanceType": "t2.micro",
+                "SecurityGroups": [
+                    {
+                        "Ref": "WebServerSecurityGroup"
+                    }
+                ],
+                "KeyName": {
+                    "Ref": "WebServerKeyName"
+                },
+                "AssociatePublicIp": "false",
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "", [
+                                "#!/bin/bash\n",
+                                "yum update -y\n",
+                                "wget http://dev.mysql.com/get/mysql157-community-release-el7-8.noarch.rpm\n",
+                                "yum localinstall -y mysql157-community-release-el7-8.noarch.rpm\n",
+                                "yum install -y mysql-community-server\n",
+                                "yum install -y httpd php php-mysqlnd git\n",
+                                "cd /var/www/html\n",
+                                "wget https://wordpress.org/latest.tar.gz\n",
+                                "tar -xzf latest.tar.gz\n",
+                                "cp wordpress/wp-config-sample.php wp-config.php\n",
+                                "groupadd www\n",
+                                "usermod -aG www ec2-user\n",
+                                "chown -R root:www /var/www\n",
+                                "chmod -R 2775 /var/www\n",
+                                "echo '<?php phpinfo(): ?>' > /var/www/html/phpinfo.php\n",
+                                "service httpd start\n",
+                                "chkconfig httpd on\n",
+                                "service mysqld start\n",
+                                "systemctl enable mysqld.service\n",
+                                "chkconfig mysqld on\n"
+
+                            ]
+                        ]
+                    }
+                },
+                "InstanceMonitoring": "true"
+             
+            }
+        },
+        "AutoScalingGroup": {
+            "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "Properties": {
+                "TargetGroupARNs": [
+                    {
+                        "Ref": "TargetGroup"
+                    }
+                ],
+                "LaunchConfigurationName": {
+                    "Ref": "LaunchConfiguration"
+                },
+                "MinSize": "2",
+                "MaxSzie": "6",
+                "DesiredSize": "3",
+                "Cooldown": "300",
+                "HealthCheckGracePeriod": "300",
+                "HealthCheckType": "ELB",
+                "VPCZoneIdentifier": {
+                    "Ref": "AppLayer1Private"
+                }
+            },
+            "Tags": [
+                {
+                    "PropagateAtLaunch": "true",
+                    "Key": "Name",
+                    "Value": "instance-wordpress"
+                }
+            ]
+        },
+        "BastionInstance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-0947d2ba12ee1ff75",
+                "InstanceType": "t2.micro",
+                "KeyName": {
+                    "Ref": "WebServerKeyName"
+                },
+                "NetworkInterfaces": [
+                    {
+                        "Groupset": [
+                            {
+                                "Ref": "BastionSecurityGroup"
+                            }
+                        ],
+                        "AssociatePublicIpAddress": "true",
+                        "DeviceIndex": "0",
+                        "DeleteOnTermination": "true",
+                        "SubnetId": {
+                            "Ref": "DMZ1Public"
+                        }
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "BastionInstance"
+                    }
+                ]
+            }
         }
 
-
-    }
-
-
-        
-
-
-
-
-
-
-        
 
     }
 
