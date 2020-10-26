@@ -293,7 +293,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "100",
+            "RuleNumber": 100,
             "Protocol": "6",
             "PortRange": {
                 "From": "22",
@@ -310,7 +310,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "110",
+            "RuleNumber": 110,
             "Protocol": "6",
             "PortRange": {
                 "From": "80",
@@ -327,7 +327,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "120",
+            "RuleNumber": 120,
             "Protocol": "6",
             "PortRange": {
                 "From": "443",
@@ -344,7 +344,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "130",
+            "RuleNumber": 130,
             "Protocol": "6",
             "PortRange": {
                 "From": "1024",
@@ -361,7 +361,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "100",
+            "RuleNumber": 100,
             "Protocol": "6",
             "PortRange": {
                 "From": "22",
@@ -378,7 +378,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "110",
+            "RuleNumber": 110,
             "Protocol": "6",
             "PortRange": {
                 "From": "80",
@@ -395,7 +395,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "120",
+            "RuleNumber": 120,
             "Protocol": "6",
             "PortRange": {
                 "From": "443",
@@ -412,7 +412,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "DMZNACL"}
             },
-            "RuleNumber": "130",
+            "RuleNumber": 130,
             "Protocol": "6",
             "PortRange": {
                 "From": "1024",
@@ -461,7 +461,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "100",
+            "RuleNumber": 100,
             "Protocol": "6",
             "PortRange": {
                 "From": "22",
@@ -478,7 +478,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "110",
+            "RuleNumber": 110,
             "Protocol": "6",
             "PortRange": {
                 "From": "80",
@@ -495,7 +495,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "120",
+            "RuleNumber": 120,
             "Protocol": "6",
             "PortRange": {
                 "From": "443",
@@ -512,7 +512,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "130",
+            "RuleNumber": 130,
             "Protocol": "6",
             "PortRange": {
                 "From": "1024",
@@ -529,7 +529,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "100",
+            "RuleNumber": 100,
             "Protocol": "6",
             "PortRange": {
                 "From": "22",
@@ -546,7 +546,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "110",
+            "RuleNumber": 110,
             "Protocol": "6",
             "PortRange": {
                 "From": "80",
@@ -563,7 +563,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "120",
+            "RuleNumber": 120,
             "Protocol": "6",
             "PortRange": {
                 "From": "443",
@@ -580,7 +580,7 @@
             "Properties": {
                 "NetworkAclId": {"Ref": "AppNACL"}
             },
-            "RuleNumber": "130",
+            "RuleNumber": 130,
             "Protocol": "6",
             "PortRange": {
                 "From": "1024",
@@ -755,8 +755,8 @@
                             "", [
                                 "#!/bin/bash\n",
                                 "yum update -y\n",
-                                "wget http://dev.mysql.com/get/mysql157-community-release-el7-8.noarch.rpm\n",
-                                "yum localinstall -y mysql157-community-release-el7-8.noarch.rpm\n",
+                                "wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm\n",
+                                "yum localinstall -y mysql57-community-release-el7-8.noarch.rpm\n",
                                 "yum install -y mysql-community-server\n",
                                 "yum install -y httpd php php-mysqlnd git\n",
                                 "cd /var/www/html\n",
