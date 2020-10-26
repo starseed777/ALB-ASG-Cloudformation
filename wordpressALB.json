@@ -799,9 +799,14 @@
                 "Cooldown": "300",
                 "HealthCheckGracePeriod": "300",
                 "HealthCheckType": "ELB",
-                "VPCZoneIdentifier": {
-                    "Ref": "AppLayer1Private"
-                }
+                "VPCZoneIdentifier": [
+                    {
+                        "Ref": "AppLayer1Private"
+                    },
+                    {
+                        "Ref": "AppLayer2Private"
+                    }
+                ]
             },
             "Tags": [
                 {
@@ -844,6 +849,28 @@
         }
 
 
+    },
+    "Outputs": {
+        "pubIpAddress1": {
+            "Description": "Returns public IP",
+            "Value": {
+                "Fn::GetAtt": [
+                    "BastionInstance",
+                    "PublicIp"
+                ]
+            }
+        },
+        "privIpAddress1": {
+            "Description": "Returns private IP",
+            "Value": {
+                "Fn::GetAtt": [
+                    "BastionInstance",
+                    "PrivateIp"
+                ]
+            }
+        }
     }
+    
+
 
 }
