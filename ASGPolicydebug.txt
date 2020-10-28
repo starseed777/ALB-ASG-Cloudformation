@@ -1,0 +1,43 @@
+Documentation for debugging scaling policy in code.
+When creating a stack in cloudformation with existing template,
+error: Encountered unsupported property "Scaling adjustment".
+
+>> looked at aws documentation and noticed in our code block a policy type 
+was not specified so I added one as "Target Tracking Scaling" and added some configurations.
+
+>> I found target tracking through just recreating the manual steps to making an asg + asg policy 
+so I thought perhaps I will just retrace the manual steps into code
+
+>> I looked up some syntax through the aws documentation and was able to add it into the code
+
+>> upon creating stack I decided to delete "Scaling Adjustment" and "Cool Down" because I kept getting 
+errors when creating stack so I left it as this instead: 
+  
+  "PolicyType":"TargetTrackingScaling",
+                "TargetTrackingConfiguration": {
+                    "PredefinedMetricSpecification": {
+                        "PredefinedMetricType": "ASGAverageCPUUtilization"
+                    },
+                    "TargetValue": 40 
+                }
+
+>> when I left it as this the cloudformation template was able to create the asg policy sucessfully
+
+>> to verify this policy was created I went into AWS after the template was sucessfully deployed and went to 
+autoscaling groups and checked the created policy. This was the policy:
+
+Policy type:
+Target tracking scaling
+Enabled or disabled?
+Enabled
+Execute policy when:
+As required to maintain Average CPU utilization at 40
+Take the action:
+Add or remove capacity units as required
+Instances need:
+300 seconds to warm up before including in metric
+Scale in:
+Enabled
+
+>> this is the aws documentation I was referring to when finding the solution: 
+https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-as-policy.html#aws-properties-as-policy--examples
