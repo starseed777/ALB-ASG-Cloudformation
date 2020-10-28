@@ -815,11 +815,15 @@
                 "AutoScalingGroupName": {
                     "Ref": "AutoScalingGroup"
                 },
-                "Cooldown": 300,
-                "ScalingAdjustment": 40,
-                "PredefinedMetricSpecification": {
-                    "PredefinedMetricType": "ASGAverageCPUUtilization"
+                "PolicyType":"TargetTrackingScaling",
+                "TargetTrackingConfiguration": {
+                    "PredefinedMetricSpecification": {
+                        "PredefinedMetricType": "ASGAverageCPUUtilization"
+                    },
+                    "TargetValue": 40 
                 }
+
+
             }
         },
         "BastionInstance": {
