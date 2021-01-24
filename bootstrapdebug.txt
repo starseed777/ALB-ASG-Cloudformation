@@ -1,0 +1,26 @@
+Documentation for debugging:
+- issue: apache server is NOT able to show wordpress page with given bootstrap script in code
+
+>> currently running another instance to recreate issue with ports 22,80,443 and 3306 opened in my security group configurations
+
+>> I messed around with the files in the /var/www/html directory inside instance and I copied all the wordpress files into /var/www/html
+
+>> when copy and pasting the public ipv4 address of this instance and adding a /wordpress , I got an error saying php was an older 
+version than what wordpress requires so perhaps the php version we installed needs to be compatible with wordpress.
+
+>> php is currently at version 5.14.16 - this is the error message "Your server is running PHP version 5.4.16 but WordPress 5.5.1 requires at least 5.6.20"
+
+>> going to spin up another instance and run the bootstrap script again command by command and install a newer version of php to see the difference.
+
+>> okay so turns out upgrading php through yum really didnt work so in this case an older version of wordpress that would be compatible with our php would make sense in this case.
+
+>> google searched for wordpress versions that are compatible with php version 5.4.16 and found that wordpress version 5.1.1 is compatible
+
+>> for the bootstrap script to work instead of latest wordpress it will be switched for: 
+wget https://wordpress.org/wordpress-5.1.1.tar.gz
+
+>> same extraction steps from tar file then copy all the extracted files to the /var/www/html directory 
+
+>> voila wordpress now works no more blank page!!! 
+
+>> just going to switch out the wordpress commands for these new ones but the rest of the bootstrap script will be the same
