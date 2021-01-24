@@ -1,1 +1,1 @@
-Cloudformation template for VPC automation with auto-scaling group and other various AWS resources.
+Cloudformation template for VPC automation with all of the necessary networking components. Resouces include various different security groups, NACL, auto-scaling group, launch configurations with a bootstrap script to run a wordpress application on ec2 instances. Debugging for the script can be found on the bootstrapdebug.txt .
